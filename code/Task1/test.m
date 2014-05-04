@@ -210,8 +210,8 @@ for i=1:4
     for j=1:size(x,2)
         ftype = [i, x(j), y(j), w(j), h(j)];
         ftype_vec = VecFeature(ftype, 19, 19);
-        veccomp(i*j) = ii_vec * ftype_vec;
-        origcomp(i*j) = ComputeFeature({ii_im}, ftype);
+        veccomp((i-1)*size(x,2) + j) = ii_vec * ftype_vec;
+        origcomp((i-1)*size(x,2) + j) = ComputeFeature({ii_im}, ftype);
     end
 end
 
@@ -222,3 +222,24 @@ if (sum(res) ~= ntests)
 else
     fprintf('All tests passed satisfactorily\n')
 end
+
+%% testing vecallfeatures - not actual feature value computation, just vectors
+fprintf(GetSeparator())
+fprintf('Testing computation of multiple vectorised features.\n')
+
+
+x = [3, 5, 10, 3, 2, 1];
+y = [1, 5, 6, 9, 7, 4];
+w = [5, 4, 2, 2, 5, 4];
+h = [3, 3, 5, 4, 1, 2];
+
+ftypes = cell(1,size(x,2)*4);
+% generate some feature specifiers
+for i=1:4
+    for j=1:size(x,2)
+        ftypes((i-1)*size(x,2)+j) = {[i, x(j), y(j), w(j), h(j)]};
+    end
+end
+
+% not really a useful test, just need to make sure that the function works
+VecAllFeatures(ftypes, 19,19)
