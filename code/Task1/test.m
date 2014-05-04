@@ -264,3 +264,58 @@ if (nerr > 0)
 else
     fprintf('All features computed successfully!\n')
 end
+
+%% test extracting features and training data and saving
+
+imdir = 'data/TrainingImages/FACES';
+nims = 100;
+saveloc = 'data/tests/fext';
+
+LoadSaveImData(imdir, nims, saveloc);
+
+%% testing for the feature extraction and saving with actual images
+
+% UNTESTED!!! %
+dinfo4 = load('data/DebugInfo/debuginfo4.mat');
+ni = dinfo4.ni;
+all_ftypes = dinfo4.all_ftypes;
+im_sfn = 'FaceData.mat';
+f_sfn = 'FeaturesToMat.mat';
+rng(dinfo4.jseed);
+
+fprintf(GetSeparator())
+fprintf('Testing multiple feature computation on a random selection of images\n')
+
+LoadSaveImData(dirname, ni, im_sfn);
+ComputeSaveFData(all_ftypes, f_sfn);
+
+matres = abs(dinfo4.fmat - fmat) > eps('single');
+imres = abs(dinfo4.ii_ims - ii_ims) > eps('single');
+
+if (sum(matres) == 0)
+    fprintf('Feature matrix computation successful.')
+else
+    fprintf('ERROR: %d of %d of the matrix computations failed.', sum(matres), ni)
+end
+
+if (sum(imres) == 0)
+    fprintf('Integral image computations successful.')
+else
+    fprintf('ERROR: %d of %d of the integral image computations failed.', sum(matres), ni)
+end
+
+
+%% Testing getting all the training data.
+
+% UNTESTED! %
+dinfo5 = load('DebugInfo/debuginfo5.mat');
+np = dinfo5.np;
+nn = dinfo5.nn;
+all ftypes = dinfo5.all ftypes;
+rng(dinfo5.jseed);
+GetTrainingData(all_ftypes, np, nn);
+
+Fdata = load('FaceData.mat');
+NFdata = load('NonFaceData.mat');
+FTdata = load('FeaturesToUse.mat');
+
