@@ -190,4 +190,35 @@ else
     fprintf('All tests passed satisfactorily\n')
 end
 
+%% testing the computation of the vector feature against the standard features
+filename = 'data/TrainingImages/FACES/face00001.bmp';
+[im, ii_im] = LoadIm(filename);
 
+ii_vec = ii_im(:)';
+x = [3, 5, 10, 3, 2, 1];
+y = [1, 5, 6, 9, 7, 4];
+w = [5, 4, 2, 2, 5, 4];
+h = [3, 3, 5, 4, 1, 2];
+
+veccomp = zeros(1,size(x,2)*4);
+origcomp = zeros(1,size(x,2)*4);
+
+fprintf(GetSeparator())
+fprintf('Testing vectorised feature computation against standard computation...\n')
+
+for i=1:4
+    for j=1:size(x,2)
+        ftype = [i, x(j), y(j), w(j), h(j)];
+        ftype_vec = VecFeature(ftype, 19, 19);
+        veccomp(i*j) = ii_vec * ftype_vec;
+        origcomp(i*j) = ComputeFeature({ii_im}, ftype);
+    end
+end
+
+res = abs(veccomp - origcomp) < eps('single');
+ntests = size(x,2) * 4;
+if (sum(res) ~= ntests)
+    fprintf('ERROR: %d tests failed!\n', size(x,2) - sum(res))
+else
+    fprintf('All tests passed satisfactorily\n')
+end
