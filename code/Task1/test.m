@@ -92,11 +92,11 @@ end
  toc
 
  %% test loading multiple images
- LoadImages('data/TrainingImages/FACES', 100)
+ LoadImages('data/TrainingImages/FACES', 100, 0)
  
 %% test computing features
 ntests = 100;
-ii_ims = LoadImages('data/TrainingImages/FACES', ntests);
+ii_ims = LoadImages('data/TrainingImages/FACES', ntests, 0);
 dinfo3 = load('data/DebugInfo/debuginfo3.mat');
 ftype = dinfo3.ftype;
 fs = ComputeFeature(ii_ims, ftype);
@@ -243,3 +243,24 @@ end
 
 % not really a useful test, just need to make sure that the function works
 VecAllFeatures(ftypes, 19,19)
+
+%% test computing features with the vectorised method
+ntests = 100;
+ii_ims = LoadImages('data/TrainingImages/FACES', ntests, 0);
+ii_vecs = LoadImages('data/TrainingImages/FACES', ntests, 1);
+ftype = dinfo3.ftype;
+fs = ComputeFeature(ii_ims, ftype);
+ftype_vec = VecFeature(ftype, size(ii_ims{1},2), size(ii_ims{1},1));
+vecfs = VecComputeFeature(ii_vecs, ftype_vec);
+nerr = sum(abs(vecfs - fs) > eps('single'));
+errors = vecfs - fs;
+
+fprintf(GetSeparator())
+fprintf('Testing feature computation on multiple images\n')
+
+if (nerr > 0)
+    fprintf('ERROR: %d errors made out of %d.\n', nerr, ntests)
+    fprintf('Max error: %e, min error: %e\n', max(errors), min(errors))
+else
+    fprintf('All features computed successfully!\n')
+end
