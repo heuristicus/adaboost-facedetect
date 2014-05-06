@@ -32,5 +32,26 @@ else
     b_vec(lcolInd - (H - (y - 1))) = 1;
 end
 
+
+% alternative computation method - do things on a matrix and then convert
+% it to a vector
+% bmat = zeros(H,W);
+% if x == 1 && y == 1
+%     bmat(y+h-1,x+w-1) = 1;
+% elseif x == 1
+%     bmat(y+h-1,x+w-1) = 1;
+%     bmat(y-1,x+w-1) = -1;
+% elseif y == 1
+%     bmat(y+h-1,x+w-1) = 1;
+%     bmat(y+h-1,x-1) = -1;
+% else
+%     bmat(y+h-1,x+w-1) = 1;
+%     bmat(y-1,x-1)  = 1;
+%     bmat(y+h-1,x-1) = -1;
+%     bmat(y-1,x+w-1) = -1;
+% end
+% 
+% b_vec = bmat(:);
+
 end
 

@@ -98,7 +98,7 @@ end
 ntests = 100;
 ii_ims = LoadImages('data/TrainingImages/FACES', ntests, 0);
 dinfo3 = load('data/DebugInfo/debuginfo3.mat');
-ftype = dinfo3.ftype;
+ftype = dinfo3.ftype;   
 fs = ComputeFeature(ii_ims, ftype);
 nerr = sum(abs(dinfo3.fs - fs) > eps);
 errors = dinfo3.fs - fs;
