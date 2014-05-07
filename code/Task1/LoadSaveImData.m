@@ -13,7 +13,7 @@ ii_ims = zeros(ni, numel(first));
 ii_ims(1,:) = first(:)';
 
 for i=2:ni
-    [~, im] = LoadIm(strcat(dirname, '/', face_fnames(fnums(1)).name));
+    [~, im] = LoadIm(strcat(dirname, '/', face_fnames(fnums(i)).name));
     ii_ims(i,:) = im(:)';
 end
 

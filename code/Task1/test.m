@@ -275,12 +275,12 @@ LoadSaveImData(imdir, nims, saveloc);
 
 %% testing for the feature extraction and saving with actual images
 
-% UNTESTED!!! %
+dirname = 'data/TrainingImages/FACES';
 dinfo4 = load('data/DebugInfo/debuginfo4.mat');
 ni = dinfo4.ni;
 all_ftypes = dinfo4.all_ftypes;
-im_sfn = 'FaceData.mat';
-f_sfn = 'FeaturesToMat.mat';
+im_sfn = 'data/FaceData.mat';
+f_sfn = 'data/FeaturesToMat.mat';
 rng(dinfo4.jseed);
 
 fprintf(GetSeparator())
@@ -288,20 +288,21 @@ fprintf('Testing multiple feature computation on a random selection of images\n'
 
 LoadSaveImData(dirname, ni, im_sfn);
 ComputeSaveFData(all_ftypes, f_sfn);
-
+load('data/FaceData.mat')
+load('data/FeaturesToMat.mat')
 matres = abs(dinfo4.fmat - fmat) > eps('single');
 imres = abs(dinfo4.ii_ims - ii_ims) > eps('single');
 
-if (sum(matres) == 0)
-    fprintf('Feature matrix computation successful.')
+if (sum(matres(:)) == 0)
+    fprintf('Feature matrix computation successful.\n')
 else
-    fprintf('ERROR: %d of %d of the matrix computations failed.', sum(matres), ni)
+    fprintf('ERROR: %d of %d of the matrix computations failed.\n', sum(matres(:)), ni)
 end
 
-if (sum(imres) == 0)
-    fprintf('Integral image computations successful.')
+if (sum(imres(:)) == 0)
+    fprintf('Integral image computations successful.\n')
 else
-    fprintf('ERROR: %d of %d of the integral image computations failed.', sum(matres), ni)
+    fprintf('ERROR: %d of %d of the integral image computations failed.\n', sum(imres(:)), ni)
 end
 
 
