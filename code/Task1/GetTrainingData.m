@@ -1,10 +1,10 @@
 function GetTrainingData(all_ftypes, np, nn)
 %GETTRAININGDATA 
 
-LoadSaveImData('data/FACES', np, 'FaceData.mat')
-LoadSaveImData('data/NFACES', nn, 'NonFaceData.mat')
+LoadSaveImData('data/TrainingImages/FACES', np, 'data/FaceData.mat')
+LoadSaveImData('data/TrainingImages/NFACES', nn, 'data/NonFaceData.mat')
 
-ComputeSaveFData(all_ftypes, 'FeaturesToUse.mat')
+ComputeSaveFData(all_ftypes, 'data/FeaturesToUse.mat')
 
 end
 
