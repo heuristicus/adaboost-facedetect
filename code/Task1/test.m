@@ -308,15 +308,14 @@ end
 
 %% Testing getting all the training data.
 
-% UNTESTED! %
 dinfo5 = load('DebugInfo/debuginfo5.mat');
 np = dinfo5.np;
 nn = dinfo5.nn;
-all ftypes = dinfo5.all ftypes;
+all_ftypes = dinfo5.all_ftypes;
 rng(dinfo5.jseed);
 GetTrainingData(all_ftypes, np, nn);
 
-Fdata = load('FaceData.mat');
-NFdata = load('NonFaceData.mat');
-FTdata = load('FeaturesToUse.mat');
+Fdata = load('data/FaceData.mat');
+NFdata = load('data/NonFaceData.mat');
+FTdata = load('data/FeaturesToUse.mat');
 
