@@ -71,5 +71,7 @@ for t=1:T
     fprintf('Time taken: %f\n', time);
 end
 
+Cparams.all_ftypes = all_ftypes;
+Cparams.fmat = fmat;
 
 end

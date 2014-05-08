@@ -98,6 +98,6 @@ Cparams = BoostingAlg(Fdata, NFdata, FTdata, T);
 sum(abs(dinfo7.alphas - Cparams.alphas)>eps('single'))
 sum(abs(dinfo7.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
-%save('data/Cparams10ftr.mat','Cparams')
+save('data/Cparams10ftr.mat','Cparams')
 
-DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)
+%DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)

@@ -5,7 +5,14 @@ function [ii_ims] = LoadImages(im_dir, nims, vectorise)
 % instead of a cell array the function will return the images in a matrix
 % where each row is one image.
     
+
+
 ims = ListDirImages(im_dir);
+
+if (nims == 0)
+    nims = numel(ims);
+end
+
 if (vectorise)
     [~,first] = LoadIm(strcat(im_dir, '/', ims{1}));
     ii_ims = zeros(nims, numel(first));
