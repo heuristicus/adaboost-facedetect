@@ -34,27 +34,38 @@ Cparams.thetas = zeros(T,3);
 
 % Combine the integral image matrices of the non-face and face images into
 % a single one to allow for easier computation of the feature vector.
-ii_imFaces = [ii_imsNonF; ii_imsFace];
+ii_imComb = [ii_imsNonF; ii_imsFace];
 
 for t=1:T
     tic
     fprintf('Choosing weak classifier %d\n', t)
+    % normalise the weights
     weights=weights/sum(weights);
+    % compute a weak classifier for all the features and store the
+    % separating line, the parity and the error.
     for j = 1:size(all_ftypes,1)
-        j
-        fVec=fmat(:,j);
-        fs=ii_imFaces*fVec;
+        fs=ii_imComb*fmat(:,j); % get the value of the feature for each training sample
         [theta(j), p(j), error(j)]=LearnWeakClassifier(weights, fs, labels);
     end
-    [error_t, min_index] = min(error);
+    [error_t, min_index] = min(error); % we want the feature with the minimum error
+    % save the values returned by the weak classifier into the parameters
+    % so that we can retrieve them later
     Cparams.thetas(t,:) = [min_index, theta(min_index), p(min_index)];
+    % compute weightings for the classifiers (alphas) and a modifier for
+    % the weights in order to update them (beta)
     beta = error_t/(1-error_t);
     betavec = ones(size(labels)) * beta;
     Cparams.alphas(t) = log(1/beta);
     
+    % recompute the classification for the optimal feature for this loop
     fVec=fmat(:,min_index);
-    fs=ii_imFaces*fVec;
+    fs=ii_imComb*fVec;
+    % p defines which direction the positive or negative classification is
+    % going
     classification=p(min_index)*fs<p(min_index)*theta(min_index);
+    % recompute the weights by reducing the weight of the correctly
+    % classified weights. When the weights are normalised this means that
+    % the misclassified examples end up with relatively higher weights.
     weights = weights .* (betavec .^(1-abs(classification-labels)));
     time=toc;
     fprintf('Time taken: %f\n', time);
@@ -62,4 +73,3 @@ end
 
 
 end
-
