@@ -6,4 +6,3 @@ fs=[fsFace;fsNonF];
 weights=ones(size(fs,1),1)/size(fs,1);
 class=[ones(size(fsFace,1),1); zeros(size(fsNonF,1),1)];
 end
-

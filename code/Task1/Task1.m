@@ -1,9 +1,13 @@
+%% Debug 1
 % loading test image
 filename = 'data/TrainingImages/FACES/face00001.bmp';
 [im, ii_im] = LoadIm(filename);
+figure;
 imagesc(im)
 colormap gray
-close all
+figure;
+imagesc(ii_im)
+colormap gray
 
 y=3;
 x=3;
@@ -12,6 +16,10 @@ h=3;
 A = ComputeBoxSum(ii_im, x, y, w, h)
 
 B=sum(sum(im(y:y+h-1, x:x+w-1)))
+dinfo1 = load('DebugInfo/debuginfo1.mat');
+eps = 1e-6;
+s1 = sum(abs(dinfo1.im(:) - im(:)) > eps)
+s2 = sum(abs(dinfo1.ii_im(:) - ii_im(:)) > eps)
 %% Testing the various feature types
 f1 = FeatureTypeI(ii_im, x, y, w, h);
 f1man = sum(sum(im(y:y+h-1, x:x+w-1))) - sum(sum(im(y+h:y+2*h-1, x:x+w-1)));
@@ -58,7 +66,8 @@ else
 end
 
 
-%% test the feature computation functions against the debugging data
+%% Debug 2
+% test the feature computation functions against the debugging data
 dinfo2 = load('data/DebugInfo/debuginfo2.mat');
 x = dinfo2.x; y = dinfo2.y; w = dinfo2.w; h = dinfo2.h;
 f1diff = dinfo2.f1 - FeatureTypeI(ii_im, x, y, w, h);
@@ -93,8 +102,9 @@ end
 
  %% test loading multiple images
  LoadImages('data/TrainingImages/FACES', 100, 0)
- 
-%% test computing features
+
+ %% Debug 3
+% test computing features
 ntests = 100;
 ii_ims = LoadImages('data/TrainingImages/FACES', ntests, 0);
 dinfo3 = load('data/DebugInfo/debuginfo3.mat');
@@ -273,7 +283,8 @@ saveloc = 'data/tests/fext';
 
 LoadSaveImData(imdir, nims, saveloc);
 
-%% testing for the feature extraction and saving with actual images
+%% Debug 4
+% testing for the feature extraction and saving with actual images
 
 dirname = 'data/TrainingImages/FACES';
 dinfo4 = load('data/DebugInfo/debuginfo4.mat');
