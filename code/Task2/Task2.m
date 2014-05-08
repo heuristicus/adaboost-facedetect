@@ -73,6 +73,8 @@ Cparams = BoostingAlg(Fdata, NFdata, Tempdata, T);
 sum(abs(dinfo6.alphas - Cparams.alphas)>eps('single'))
 sum(abs(dinfo6.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
+DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)
+
 % ourtheta=Cparams.thetas(:)
 % theirtheta=dinfo6.Thetas(:)
 % ouralpha = Cparams.alphas
@@ -98,14 +100,4 @@ sum(abs(dinfo7.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
 %save('data/Cparams10ftr.mat','Cparams')
 
-for i=1:T
-    figure
-    fpic = MakeFeaturePic(FTdata.all_ftypes(Cparams.thetas(i, 1),:), 19, 19);
-    imagesc(fpic)
-    colormap('gray')
-end
-
-figure
-cpic = MakeClassifierPic(FTdata.all_ftypes, Cparams.thetas(:, 1), Cparams.alphas, Cparams.thetas(:,3), 19, 19);
-imagesc(cpic)
-colormap('gray')
+DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)
