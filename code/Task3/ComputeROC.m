@@ -35,7 +35,7 @@ if (~exist('data/testimscores.mat', 'file'))
     save('data/testimscores.mat', 'score', 'labels')
 end
 
-thresholds = 0:0.05:10;
+thresholds = 0:0.001:10;
 tpr = zeros(numel(thresholds),1);
 fpr = zeros(numel(thresholds),1);
 for i=1:numel(thresholds)
@@ -48,11 +48,25 @@ for i=1:numel(thresholds)
 
     tpr(i) = truepos/(truepos + falseneg);
     fpr(i) = falsepos/(trueneg + falsepos);
+%     if tpr(i) > .7
+%         thresholds(i)
+%         break;
+%     end
 end
+
+ind = find(tpr>.7,1,'last')
+thresholds(ind)
 
 figure
 plot(fpr, tpr)
 xlabel('fpr')
 ylabel('tpr')
-    
+figure
+plot(thresholds,tpr)
+xlabel('thresholds')
+ylabel('tpr')
+figure
+plot(thresholds,fpr)
+xlabel('thresholds')
+ylabel('fpr')
 end
