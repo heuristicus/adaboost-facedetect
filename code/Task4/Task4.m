@@ -18,3 +18,14 @@ dets = ScanImageFixedSize(Cparams, im, W, H);
 %%
 im =imread('data/TestImages/one_chris.png');
 DisplayDetections(im, dets)
+
+%% 
+PruneDetections(dets)
+
+%%
+
+im =imread('data/TestImages/one_chris.png');
+W=19;
+H=19;
+dets = ScanImageOverScale(Cparams, im, 0.5, 1.5, 0.5);
+DisplayDetections(im, dets)
