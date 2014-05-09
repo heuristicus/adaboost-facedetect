@@ -279,7 +279,7 @@ end
 
 imdir = 'data/TrainingImages/FACES';
 nims = 100;
-saveloc = 'data/tests/fext';
+saveloc = 'data/testsave';
 
 LoadSaveImData(imdir, nims, saveloc);
 

@@ -2,17 +2,17 @@ function ComputeROC(Cparams, Fdata, NFdata)
 %COMPUTEROC
 
 if (~exist('data/testimscores.mat', 'file'))
-    facelist = ListDirImages(Fdata.dirname);
-    nonfacelist = ListDirImages(NFdata.dirname);
+    facelist = dir(Fdata.dirname);
+    nonfacelist = dir(NFdata.dirname);
     
     facetraining = Fdata.fnums;
     nftraining = NFdata.fnums;
     
-    % facetest = setdiff(3:numel(facelist), facetraining);
-    % nftest = setdiff(3:numel(nonfacelist), nftraining);
+    facetest = setdiff(3:numel(facelist), facetraining);
+    nftest = setdiff(3:numel(nonfacelist), nftraining);
     
-    facetest = setdiff(1:numel(facelist), facetraining);
-    nftest = setdiff(1:numel(nonfacelist), nftraining);
+%     facetest = setdiff(1:numel(facelist), facetraining);
+%     nftest = setdiff(1:numel(nonfacelist), nftraining);
     
     ftestnames = facelist(facetest);
     nftestnames = nonfacelist(nftest);
@@ -22,13 +22,13 @@ if (~exist('data/testimscores.mat', 'file'))
     
     lastind = 0;
     for i=1:numel(ftestnames)
-        [~, ii_im] = LoadIm(ftestnames{i});
+        [~, ii_im] = LoadIm(ftestnames(i).name);
         score(i) = ApplyDetector(Cparams, ii_im);
         lastind = i;
     end
     
     for i=1:numel(nftestnames);
-        [~, ii_im] = LoadIm(nftestnames{i});
+        [~, ii_im] = LoadIm(nftestnames(i).name);
         score(lastind + i) = ApplyDetector(Cparams, ii_im);
     end
     
