@@ -1,5 +1,5 @@
 %% Compute Histogram of feature responses
-fNumber=998;
+fNumber=12028;
 Fdata = load('data/FaceData.mat');
 NFdata = load('data/NonFaceData.mat');
 FTdata = load('data/FeaturesToUse.mat');
