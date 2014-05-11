@@ -1,7 +1,10 @@
-function thresh = ComputeROC(Cparams, Fdata, NFdata)
-%COMPUTEROC
+function thresh = ComputeROC(Cparams, Fdata, NFdata, tpr_req, thresh_step, testscores)
+%COMPUTEROC Computes the ROC curves and the threshold required to get the
+%requested rate of true positives. The testscores string defines where to
+%find the scores on the remainder of the training images. If this does not
+%exist, then it will be created.
 
-if (~exist('data/testimscores.mat', 'file'))
+if (~exist(testscores, 'file'))
     facelist = dir(Fdata.dirname);
     nonfacelist = dir(NFdata.dirname);
     
@@ -32,29 +35,30 @@ if (~exist('data/testimscores.mat', 'file'))
         score(lastind + i) = ApplyDetector(Cparams, ii_im);
     end
     
-    save('data/testimscores.mat', 'score', 'labels')
+    save(testscores, 'score', 'labels')
 end
 
-thresholds = 0:0.001:10;
-tpr = zeros(numel(thresholds),1);
-fpr = zeros(numel(thresholds),1);
-for i=1:numel(thresholds)
-    load('data/testimscores.mat')
-    classification = score > thresholds(i);
+threshold = 0;
+thresholds = [];
+tpr = [];
+fpr = [];
+lasttpr = 1;
+while lasttpr > 0
+    load(testscores)
+    classification = score > threshold;
     truepos = sum((classification == 1) & (labels == 1));
     trueneg = sum((classification == 0) & (labels == 0));
     falsepos = sum((classification == 1) & (labels == 0));
     falseneg = sum((classification == 0) & (labels == 1));
 
-    tpr(i) = truepos/(truepos + falseneg);
-    fpr(i) = falsepos/(trueneg + falsepos);
-%     if tpr(i) > .7
-%         thresholds(i)
-%         break;
-%     end
+    threshold = threshold + thresh_step;
+    thresholds = [thresholds threshold];
+    tpr = [tpr truepos/(truepos + falseneg)];
+    fpr = [fpr falsepos/(trueneg + falsepos)];
+    lasttpr = tpr(end);
 end
 
-ind = find(tpr>.7,1,'last');
+ind = find(tpr>tpr_req,1,'last');
 thresh = thresholds(ind);
 
 figure

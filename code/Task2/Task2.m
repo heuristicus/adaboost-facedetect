@@ -73,7 +73,7 @@ Cparams = BoostingAlg(Fdata, NFdata, Tempdata, T);
 sum(abs(dinfo6.alphas - Cparams.alphas)>eps('single'))
 sum(abs(dinfo6.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
-DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)
+DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19, 1)
 
 % ourtheta=Cparams.thetas(:)
 % theirtheta=dinfo6.Thetas(:)
@@ -103,4 +103,4 @@ sum(abs(dinfo7.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
 save('data/Cparams10ftr.mat','Cparams')
 
-%DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19)
+DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19, 1)

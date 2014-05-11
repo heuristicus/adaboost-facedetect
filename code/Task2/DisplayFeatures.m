@@ -1,12 +1,15 @@
-function DisplayFeatures(all_ftypes, Cparams, W, H)
+function DisplayFeatures(all_ftypes, Cparams, W, H, showall)
 %DISPLAYFEATURES shows the features computed by the boosting algorithm and
-%their combined result given the image data.
+%their combined result given the image data. Showall defines whether to
+%show all of the features or just the final combined result.
 
 for i=1:size(Cparams.thetas, 1)
-    figure
     fpic = MakeFeaturePic(all_ftypes(Cparams.thetas(i, 1),:), W, H);
-    imagesc(fpic)
-    colormap('gray')
+    if (showall)
+        figure
+        imagesc(fpic)
+        colormap('gray')
+    end
 end
 
 figure

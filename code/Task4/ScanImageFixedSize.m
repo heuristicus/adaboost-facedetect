@@ -37,7 +37,6 @@ for y=1:size(im,1)+1-H
 end
 thresh=Cparams.thresh;
 
-
 classification = scores > thresh;
 [Yind Xind]= find(classification);
 dets=[Xind Yind ones(size(Xind,1),1)*W ones(size(Xind,1),1)*H];

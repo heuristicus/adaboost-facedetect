@@ -5,4 +5,4 @@
 ApplyDetector(Cparams, ii_im);
 
 %% Testing the ROC curve 
-ComputeROC(Cparams, Fdata, NFdata)
+ComputeROC(Cparams, Fdata, NFdata, 0.7, 0.01, 'data/testimscores.mat')

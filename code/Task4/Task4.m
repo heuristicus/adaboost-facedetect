@@ -103,8 +103,8 @@ for i=1:size(pruned,1)
     rectangle('Position', pruned(i,:),'EdgeColor','b')
 end
 
-%%
-
+%% Testing the multi-scale computation
+close all
 im =imread('data/TestImages/one_chris.png');
 im = imresize(im,1.2);
 W=19;
