@@ -4,12 +4,32 @@ function pdets = PruneDetections(dets, ol_thresh)
 %ol_thresh. Significantly overlapping boxes are combined such that they are
 %the end result is the average of the overlapping boxes.
 
-[ncomps, comps] = graphconncomp(sparse(rectint(dets,dets)>ol_thresh));
+% create a matrix of the areas such that the columns are repeated
+areas = dets(:,3) .* dets(:,4);
+arearep = repmat(areas, 1, size(dets,1));
+% get the sum of each rectangle area with each other one
+areasum = arearep' + arearep;
+% get the overlap of the rectangles with themselves
+orarea = rectint(dets,dets);
+% The total area of two rectangles combined into a single shape is the sum
+% of their areas minus the overlapping area
+unionarea = areasum - orarea;
+% the proportion of the total area which is overlap
+areaprop = orarea ./ unionarea;
 
+% Get the connected components. These are those sets of rectangles which
+% have mutual overlap of more than the given threshold.
+[ncomps, comps] = graphconncomp(sparse(areaprop>ol_thresh));
+
+% pruned rectangles
 pdets = zeros(ncomps, 4);
 
 for i=1:ncomps
+    % cvec contains ones for each rectangle in the given connected
+    % component
     cvec = comps == i;
+    % Each of the resulting rectangles is the average of the rectangles in
+    % the connected component.
     pdets(i,:) = sum(dets(cvec, :), 1)/sum(cvec);
 end
 

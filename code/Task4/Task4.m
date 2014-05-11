@@ -14,11 +14,14 @@ score = ApplyDetector(Cparams, ii_im)
 im =imread('data/TestImages/one_chris.png');
 W=19;
 H=19;
-dets = ScanImageFixedSize(Cparams, im, W, H);
+dets = ScanImageFixedSize(Cparams, im, W, H)
 %%
+close all
 im =imread('data/TestImages/one_chris.png');
 DisplayDetections(im, dets)
-
+dets
+prdet = PruneDetections(dets, 0.6);
+DisplayDetections(im, prdet)
 %% test pruning detections with manually defined test boxes
 close all
 % overlapping boxes are in pairs.
@@ -105,5 +108,10 @@ end
 im =imread('data/TestImages/one_chris.png');
 W=19;
 H=19;
-dets = ScanImageOverScale(Cparams, im, 0.5, 1.5, 0.5);
+cp = Cparams;
+cp.thresh = 8;
+min_s = 0.6;
+max_s = 1.3;
+step_s = 0.06;
+dets = ScanImageOverScale(cp, im, min_s, max_s, step_s);
 DisplayDetections(im, dets)
