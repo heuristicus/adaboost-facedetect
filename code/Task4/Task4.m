@@ -106,6 +106,7 @@ end
 %%
 
 im =imread('data/TestImages/one_chris.png');
+im = imresize(im,1.2);
 W=19;
 H=19;
 cp = Cparams;
