@@ -9,11 +9,13 @@ alphas = Cparams.alphas;
 fscores = ii_im(:)' * req_features;
 ftypes=Cparams.all_ftypes(Cparams.thetas(:,1),1);
 ind=find(ftypes==3);
+
 % norm=ones(size(fscores,1),1)*(1/stdDev);
-fscores=fscores./stdDev;
-if ~isempty(ind)
-    fscores(ind)=fscores(ind)+((numel(ii_im)*muSW)/stdDev);
-end
+% % fscores=fscores./stdDev;
+% % if ~isempty(ind)
+% %     fscores(ind)=fscores(ind)+((numel(ii_im)*muSW)/stdDev);
+% % end
+
 % Apply the weak classifiers to get a classification of an image
 % first need to apply parities in order to get the correct classification
 % direction
