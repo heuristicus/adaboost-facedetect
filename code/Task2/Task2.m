@@ -91,9 +91,12 @@ imagesc(fpic)
 colormap('gray')
 
 %% Debug 2
-
+Fdata = load('data/FaceData.mat');
+NFdata = load('data/NonFaceData.mat');
+FTdata = load('data/FeaturesToUse.mat');
 dinfo7 = load('DebugInfo/debuginfo7.mat');
 T = dinfo7.T;
+FTdata.fmat = sparse(FTdata.fmat);
 Cparams = BoostingAlg(Fdata, NFdata, FTdata, T);
 sum(abs(dinfo7.alphas - Cparams.alphas)>eps('single'))
 sum(abs(dinfo7.Thetas(:) - Cparams.thetas(:))>eps('single'))

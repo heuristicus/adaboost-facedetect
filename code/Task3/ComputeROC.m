@@ -1,4 +1,4 @@
-function ComputeROC(Cparams, Fdata, NFdata)
+function thresh = ComputeROC(Cparams, Fdata, NFdata)
 %COMPUTEROC
 
 if (~exist('data/testimscores.mat', 'file'))
@@ -54,8 +54,8 @@ for i=1:numel(thresholds)
 %     end
 end
 
-ind = find(tpr>.7,1,'last')
-thresholds(ind)
+ind = find(tpr>.7,1,'last');
+thresh = thresholds(ind);
 
 figure
 plot(fpr, tpr)

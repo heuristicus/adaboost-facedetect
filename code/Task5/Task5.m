@@ -11,4 +11,7 @@ T = 100;
 
 Cparams = BoostingAlg(Fdata, NFdata, FTdata, T);
 
+% compute the ROC curve and get the threshold for the true positive rate
+Cparams.thresh = ComputeROC(Cparams, Fdata, NFdata);
+
 save('data/Cparams100cl.mat','Cparams')
