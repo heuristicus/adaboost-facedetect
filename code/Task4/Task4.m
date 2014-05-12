@@ -15,9 +15,6 @@ im =imread('data/TestImages/one_chris.png');
 W=19;
 H=19;
 dets = ScanImageFixedSize(Cparams, im, W, H)
-%%
-close all
-im =imread('data/TestImages/one_chris.png');
 DisplayDetections(im, dets)
 dets
 prdet = PruneDetections(dets, 0.6);

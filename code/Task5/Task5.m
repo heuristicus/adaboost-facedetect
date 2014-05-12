@@ -74,5 +74,7 @@ end
 load('data/detectedfaces.mat')
 
 for i=1:length(files)
+    close all
     DisplayDetections(imread(files(i).name), PruneDetections(detected{i}, 0.3))
+    pause
 end

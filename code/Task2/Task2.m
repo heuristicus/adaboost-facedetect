@@ -69,11 +69,11 @@ dinfo6 = load('data/DebugInfo/debuginfo6.mat');
 T = dinfo6.T;
 Tempdata = FTdata;
 Tempdata.all_ftypes = FTdata.all_ftypes(1:1000,:);
-Cparams = BoostingAlg(Fdata, NFdata, Tempdata, T);
-sum(abs(dinfo6.alphas - Cparams.alphas)>eps('single'))
-sum(abs(dinfo6.Thetas(:) - Cparams.thetas(:))>eps('single'))
+cp = BoostingAlg(Fdata, NFdata, Tempdata, T);
+sum(abs(dinfo6.alphas - cp.alphas)>eps('single'))
+sum(abs(dinfo6.Thetas(:) - cp.thetas(:))>eps('single'))
 
-DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19, 1)
+DisplayFeatures(FTdata.all_ftypes, cp, 19, 19, 1)
 
 % ourtheta=Cparams.thetas(:)
 % theirtheta=dinfo6.Thetas(:)
@@ -84,13 +84,15 @@ DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19, 1)
 
 %% testing first feature from the debug set
 T = 1;
-Cparams = BoostingAlg(Fdata, NFdata, FTdata, T);
+FTdata.fmat = sparse(FTdata.fmat);
+cp = BoostingAlg(Fdata, NFdata, FTdata, T);
 figure
-fpic = MakeFeaturePic(FTdata.all_ftypes(Cparams.thetas(i, 1),:), 19, 19);
+fpic = MakeFeaturePic(FTdata.all_ftypes(cp.thetas(1, 1),:), 19, 19);
 imagesc(fpic)
 colormap('gray')
 
-%% Debug 2
+%% Debug 2 (with boost computation)
+close all;
 Fdata = load('data/FaceData.mat');
 NFdata = load('data/NonFaceData.mat');
 FTdata = load('data/FeaturesToUse.mat');
@@ -102,5 +104,13 @@ sum(abs(dinfo7.alphas - Cparams.alphas)>eps('single'))
 sum(abs(dinfo7.Thetas(:) - Cparams.thetas(:))>eps('single'))
 
 save('data/Cparams10ftr.mat','Cparams')
+
+%% Debug 2 (without boost computation)
+close all;
+Fdata = load('data/FaceData.mat');
+NFdata = load('data/NonFaceData.mat');
+FTdata = load('data/FeaturesToUse.mat');
+dinfo7 = load('DebugInfo/debuginfo7.mat');
+load('data/Cparams10ftr.mat');
 
 DisplayFeatures(FTdata.all_ftypes, Cparams, 19, 19, 1)

@@ -16,7 +16,7 @@ for y=1:size(im,1)+1-H
         sumSqSw=ComputeBoxSum(ii_imSqSW, x,y,W,H);
         varSW=(1/((W*H)-1))*(sumSqSw-((W*H)*muSW^2));        
         stdSW=sqrt(varSW);
-        scores(y,x) = ApplyDetectorSubwindow( Cparams, subWindowIm, muSW, stdSW);
+        scores(y,x) = ApplyDetectorSubwindow(Cparams, subWindowIm, muSW, stdSW);
 % % %         Non-Optimal Normalization
 % %         subWindow=i(y:y+H-1,x:x+W-1);
 % %         muSW=mean(subWindow(:));
