@@ -23,14 +23,65 @@ end
 
 %% randomise the file list for the training images that we are going to use
 
-indirs = {'data/ExtraData/Training/FACES', 'data/ExtraData/Training/NFACES'};
-
-face_fnames = dir(indirs{1});
+dirname = 'data/ExtraData/Training/FACES';
+face_fnames = dir(dirname);
 nlist = 3:length(face_fnames); % numbers from 3 to the length of the directory
-facelist = randperm(length(nlist)); % permute so we can get random images from the top of the list
+fnums = randperm(length(nlist)); % permute so we can get random images from the top of the list
+ii_ims = LoadImages(dirname, length(fnums),1);
 
-face_fnames = dir(indirs{2});
+save('data/ExtraData/Fdata.mat', 'dirname', 'fnums', 'ii_ims')
+
+dirname = 'data/ExtraData/Training/NFACES';
+face_fnames = dir(dirname);
 nlist = 3:length(face_fnames); % numbers from 3 to the length of the directory
-nonfacelist = randperm(length(nlist)); % permute so we can get random images from the top of the list
+fnums = randperm(length(nlist)); % permute so we can get random images from the top of the list
+ii_ims = LoadImages(dirname, length(fnums),1);
 
-save('data/ExtraData/randfilelist.mat', 'facelist', 'nonfacelist');
+save('data/ExtraData/NFdata.mat', 'dirname', 'fnums', 'ii_ims')
+
+%% train the strong classifier on some proportion of the test data and save
+% the results
+
+Fdata = load('data/ExtraData/Fdata.mat');
+NFdata = load('data/ExtraData/NFdata.mat');
+FTdata = load('data/FeaturesToUse.mat'); % same features as before
+
+FTdata.fmat = sparse(FTdata.fmat);
+
+props = [.3 .4 .5 .6 .7 .8 .9 1];
+nweakclassifiers = 10;
+params = cell(1,length(props));
+
+for i=1:length(props)
+    fprintf('Training strong classifier on %d percent of the training data.\n', props(i)*100);
+    % modify the internal contents of fdata to match the current proportion
+    ntrainimsface = floor(props(i)*length(Fdata.fnums));
+    fnums = Fdata.fnums(1:ntrainimsface);
+    ii_ims = Fdata.ii_ims(1:ntrainimsface, :);
+    modFdata.fnums = fnums;
+    modFdata.ii_ims = ii_ims;
+    
+    % modify nfdata
+    ntrainimsnonface = floor(props(i)*length(NFdata.fnums));
+    fnums = NFdata.fnums(1:ntrainimsnonface);
+    ii_ims = NFdata.ii_ims(1:ntrainimsnonface,:);
+    modNFdata.fnums = fnums;
+    modNFdata.ii_ims = ii_ims;
+
+    params{i} = BoostingAlg(modFdata, modNFdata, FTdata, nweakclassifiers);
+end
+
+save('data/ExtraData/paramsorig.mat', 'params', 'props');
+
+%% find the thresholds for each of the trained strong classifiers
+
+params = load('data/ExtraData/paramsorig.mat');
+Fdata = load('data/ExtraData/Fdata.mat');
+NFdata = load('data/ExtraData/NFdata.mat');
+
+for i=1:length(params.params)
+    thresh = ComputeROC(params.params{i}, Fdata, NFdata, 0.7, 0.01, strcat('data/ExtraData/testdata', params.props(i), '.mat'));
+    params.params{i}.thresh = thresh;
+end
+
+save('data/ExtraData/paramsthresh.mat', 'params');
