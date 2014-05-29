@@ -10,7 +10,7 @@ FTdata.fmat = sparse(FTdata.fmat);
 
 T = 100;
 
-Cparams.thetaCparams = BoostingAlg(Fdata, NFdata, FTdata, T);
+Cparams.Cparams = BoostingAlg(Fdata, NFdata, FTdata, T);
 
 % compute the ROC curve and get the threshold for the true positive rate
 Cparams.thresh = ComputeROC(Cparams, Fdata, NFdata, 0.7, 0.01,'data/100testscores.mat');
@@ -51,7 +51,7 @@ close all;
 Fdata = load('data/FaceData.mat');
 NFdata = load('data/NonFaceData.mat');
 FTdata = load('data/FeaturesToUse.mat');
-load('data/Cparams10ftr.mat')
+load('data/Cparams100cl.mat')
 
 files = dir('data/TestImages');
 files = files(3:end);

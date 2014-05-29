@@ -4,6 +4,7 @@
 
 indirs = {'data/TrainingImages/FACES', 'data/TrainingImages/NFACES'};
 outdirs = {'data/ExtraData/Test/FACES', 'data/ExtraData/Test/NFACES'};
+outfiles = {'data/ExtraData/testfacenums.mat', 'data/ExtraData/testnonfnums.mat'}
 testprop = 0.2; % the proportion of the images in each directory to use for testing
 
 for i = 1:size(indirs,2)
@@ -15,6 +16,8 @@ for i = 1:size(indirs,2)
     randlist = randperm(length(nlist)); % permute so we can get random images from the top of the list
     nims = testprop * length(nlist); % the number of images we want to put in the test set
     fnums = nlist(randlist(1:nims)); % extract the first n random values
+    
+    save(outfiles{i}, 'fnums');
     
     for f=1:length(fnums)
         movefile(strcat(indir, '/', face_fnames(fnums(f)).name), strcat(outdir, '/', face_fnames(fnums(f)).name));
@@ -48,7 +51,7 @@ FTdata = load('data/FeaturesToUse.mat'); % same features as before
 
 FTdata.fmat = sparse(FTdata.fmat);
 
-props = [.3 .4 .5 .6 .7 .8 .9 1];
+props = [.1 .2 .3 .4 .5 .6 .7 .8 .9 1];
 nweakclassifiers = 10;
 params = cell(1,length(props));
 
@@ -71,7 +74,7 @@ for i=1:length(props)
     params{i} = BoostingAlg(modFdata, modNFdata, FTdata, nweakclassifiers);
 end
 
-save('data/ExtraData/paramsorig.mat', 'params', 'props');
+save('data/ExtraData/paramsorig.mat', 'cparams', 'props');
 
 %% find the thresholds for each of the trained strong classifiers
 
@@ -79,9 +82,24 @@ params = load('data/ExtraData/paramsorig.mat');
 Fdata = load('data/ExtraData/Fdata.mat');
 NFdata = load('data/ExtraData/NFdata.mat');
 
+colours = hsv(length(params.params));
+names = cell(1,length(params.params));
+figure
+hold on
 for i=1:length(params.params)
-    thresh = ComputeROC(params.params{i}, Fdata, NFdata, 0.7, 0.01, strcat('data/ExtraData/testdata', params.props(i), '.mat'));
+%     strcat('data/ExtraData/testdata', num2str(params.props(i)))
+    [thresh, tpr, fpr, acc, thresholds] = ComputeROC(params.params{i}, Fdata, NFdata, 0.7, ...
+                                    0.01, strcat('data/ExtraData/testdata', ...
+                                    num2str(params.props(i)), '.mat'), ...
+                                    'data/ExtraData/Test');
     params.params{i}.thresh = thresh;
+    names{i} = num2str(params.props(i));
+    plot(fpr, tpr, 'color', colours(i,:));
+%     plot(thresholds, acc, 'color', colours(i,:));
 end
+legend(names)
+xlabel('fpr')
+ylabel('tpr')
+
 
 save('data/ExtraData/paramsthresh.mat', 'params');

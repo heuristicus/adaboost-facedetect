@@ -1,4 +1,4 @@
-function thresh = ComputeROC(Cparams, Fdata, NFdata, tpr_req, thresh_step, testscores)
+function [thresh, tpr, fpr, acc, thresholds] = ComputeROC(Cparams, Fdata, NFdata, tpr_req, thresh_step, testscores, testdir)
 %COMPUTEROC Computes the ROC curves and the threshold required to get the
 %requested rate of true positives. The testscores string defines where to
 %find the scores on the remainder of the training images. If this does not
@@ -11,15 +11,22 @@ if (~exist(testscores, 'file'))
     facetraining = Fdata.fnums;
     nftraining = NFdata.fnums;
     
-    facetest = setdiff(3:numel(facelist), facetraining);
-    nftest = setdiff(3:numel(nonfacelist), nftraining);
-    
-%     facetest = setdiff(1:numel(facelist), facetraining);
-%     nftest = setdiff(1:numel(nonfacelist), nftraining);
-    
-    ftestnames = facelist(facetest);
-    nftestnames = nonfacelist(nftest);
-    
+    if (nargin < 7 || ~exist(testdir, 'dir'))
+        facetest = setdiff(3:numel(facelist), facetraining);
+        nftest = setdiff(3:numel(nonfacelist), nftraining);
+        
+        %     facetest = setdiff(1:numel(facelist), facetraining);
+        %     nftest = setdiff(1:numel(nonfacelist), nftraining);
+        
+        ftestnames = facelist(facetest);
+        nftestnames = nonfacelist(nftest);
+    else
+        facelist = dir(strcat(testdir, '/FACES'));
+        nonfacelist = dir(strcat(testdir, '/NFACES'));
+        ftestnames = facelist(3:numel(facelist));
+        nftestnames = nonfacelist(3:numel(nonfacelist));
+    end
+        
     score = zeros(numel(nftestnames) + numel(ftestnames), 1);
     labels = [ones(numel(ftestnames), 1); zeros(numel(nftestnames), 1)];
     
@@ -34,7 +41,7 @@ if (~exist(testscores, 'file'))
         [~, ii_im] = LoadIm(nftestnames(i).name);
         score(lastind + i) = ApplyDetector(Cparams, ii_im);
     end
-    
+
     save(testscores, 'score', 'labels')
 end
 
@@ -42,6 +49,7 @@ threshold = 0;
 thresholds = [];
 tpr = [];
 fpr = [];
+acc = [];
 lasttpr = 1;
 while lasttpr > 0
     load(testscores)
@@ -50,7 +58,9 @@ while lasttpr > 0
     trueneg = sum((classification == 0) & (labels == 0));
     falsepos = sum((classification == 1) & (labels == 0));
     falseneg = sum((classification == 0) & (labels == 1));
-
+    
+    accuracy = (truepos + trueneg)/(truepos + trueneg + falsepos + falseneg);
+    acc = [acc accuracy];
     threshold = threshold + thresh_step;
     thresholds = [thresholds threshold];
     tpr = [tpr truepos/(truepos + falseneg)];
@@ -61,16 +71,15 @@ end
 ind = find(tpr>tpr_req,1,'last');
 thresh = thresholds(ind);
 
-figure
-plot(fpr, tpr)
-xlabel('fpr')
-ylabel('tpr')
-figure
-plot(thresholds,tpr)
-xlabel('thresholds')
-ylabel('tpr')
-figure
-plot(thresholds,fpr)
-xlabel('thresholds')
-ylabel('fpr')
+% plot(fpr, tpr)
+% xlabel('fpr')
+% ylabel('tpr')
+% figure
+% plot(thresholds,tpr)
+% xlabel('thresholds')
+% ylabel('tpr')
+% figure
+% plot(thresholds,fpr)
+% xlabel('thresholds')
+% ylabel('fpr')
 end

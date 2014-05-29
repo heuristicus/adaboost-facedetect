@@ -14,8 +14,7 @@ W=ftypes(ind,4);
 H=ftypes(ind,5);
 fscores=fscores./stdDev;
 if ~isempty(ind)
-    
-    fscores(ind)=fscores(ind)+(W.*H)*((muSW)/stdDev);
+    fscores(ind)=fscores(ind)+((W.*H).*repmat(((muSW)/stdDev), size(W,1), 1))';
 end
 
 % Apply the weak classifiers to get a classification of an image
